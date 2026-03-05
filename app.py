@@ -1,19 +1,79 @@
 import random
+import json
+import os
 import streamlit as st
 from logic_utils import get_range_for_difficulty, parse_guess, check_guess, update_score
 
+# Challenge 2: High score persistence — Claude Code added file-based high score tracking
+HIGHSCORE_FILE = "highscore.json"
+
+def load_high_score() -> int:
+    if os.path.exists(HIGHSCORE_FILE):
+        with open(HIGHSCORE_FILE) as f:
+            return json.load(f).get("high_score", 0)
+    return 0
+
+def save_high_score(score: int):
+    current = load_high_score()
+    if score > current:
+        with open(HIGHSCORE_FILE, "w") as f:
+            json.dump({"high_score": score}, f)
+
 OUTCOME_MESSAGES = {
-    "Win": "🎉 Correct!",
-    "Too High": "📉 Go LOWER!",
-    "Too Low": "📈 Go HIGHER!",
+    "Win": "🎉 CORRECT! You cracked the code!",
+    "Too High": "🔴 Go LOWER!",
+    "Too Low": "🟢 Go HIGHER!",
 }
 
-st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
+# Challenge 4: Neon Arcade UI — Claude Code redesigned the theme to match the game aesthetic
+st.set_page_config(page_title="Game Glitch Investigator 🎮", page_icon="🎮")
+
+st.markdown("""
+<style>
+    .stApp { background-color: #0d1b2a; color: #e8f0f7; }
+
+    [data-testid="stSidebar"] {
+        background-color: #112236;
+        border-right: 1px solid #1e3a5f;
+    }
+
+    h1, h2, h3 { color: #f4c542; font-weight: 700; }
+
+    .stButton>button {
+        background-color: #f4c542;
+        color: #0d1b2a;
+        border: none;
+        border-radius: 6px;
+        font-weight: 700;
+        padding: 0.4rem 1.2rem;
+    }
+    .stButton>button:hover {
+        background-color: #e0b030;
+        color: #0d1b2a;
+    }
+
+    .stTextInput>div>input {
+        background-color: #112236;
+        color: #e8f0f7;
+        border: 1px solid #1e3a5f;
+        border-radius: 6px;
+    }
+
+    .stCaption { color: #7a9bbf; }
+    [data-testid="stMetricValue"] { color: #f4c542; font-weight: bold; }
+    [data-testid="stProgress"] > div { background-color: #f4c542 !important; }
+    .stSelectbox label, .stCheckbox label { color: #e8f0f7; }
+</style>
+""", unsafe_allow_html=True)
 
 st.title("🎮 Game Glitch Investigator")
-st.caption("An AI-generated guessing game. Something is off.")
+st.caption("Debugged, refactored, and ready to play.")
 
-st.sidebar.header("Settings")
+st.sidebar.header("🕹️ Settings")
+
+# Challenge 2: High score display in sidebar
+high_score = load_high_score()
+st.sidebar.metric("🏆 High Score", high_score)
 
 difficulty = st.sidebar.selectbox(
     "Difficulty",
@@ -113,8 +173,9 @@ if submit:
         if outcome == "Win":
             st.balloons()
             st.session_state.status = "won"
+            save_high_score(st.session_state.score)  # Challenge 2: persist high score
             st.success(
-                f"You won! The secret was {st.session_state.secret}. "
+                f"🎮 You cracked the code! The secret was {st.session_state.secret}. "
                 f"Final score: {st.session_state.score}"
             )
         else:
@@ -126,5 +187,30 @@ if submit:
                     f"Score: {st.session_state.score}"
                 )
 
+# Challenge 2: Guess history sidebar — visualizes how close each guess was
+if st.session_state.history:
+    st.sidebar.divider()
+    st.sidebar.subheader("🕹️ Guess History")
+    secret = st.session_state.secret
+    game_range = high - low
+    for i, guess in enumerate(st.session_state.history):
+        if isinstance(guess, int):
+            distance = abs(guess - secret)
+            closeness = max(0, 1 - distance / game_range)
+            if guess == secret:
+                icon = "🎯"
+            elif closeness > 0.8:
+                icon = "🔥"
+            elif closeness > 0.5:
+                icon = "🌡️"
+            elif closeness > 0.2:
+                icon = "🔵"
+            else:
+                icon = "❄️"
+            st.sidebar.write(f"{icon} Guess {i+1}: **{guess}**")
+            st.sidebar.progress(closeness)
+        else:
+            st.sidebar.write(f"⚠️ Guess {i+1}: `{guess}` (invalid)")
+
 st.divider()
-st.caption("Built by an AI that claims this code is production-ready.")
+st.caption("Built by an AI that claims this code is production-ready. 🎮")
