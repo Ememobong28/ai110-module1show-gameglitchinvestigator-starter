@@ -1,6 +1,12 @@
 def get_range_for_difficulty(difficulty: str):
     """Return (low, high) inclusive range for a given difficulty."""
-    raise NotImplementedError("Refactor this function from app.py into logic_utils.py")
+    if difficulty == "Easy":
+        return 1, 20
+    if difficulty == "Normal":
+        return 1, 100
+    if difficulty == "Hard":
+        return 1, 50
+    return 1, 100
 
 
 def parse_guess(raw: str):
@@ -9,18 +15,36 @@ def parse_guess(raw: str):
 
     Returns: (ok: bool, guess_int: int | None, error_message: str | None)
     """
-    raise NotImplementedError("Refactor this function from app.py into logic_utils.py")
+    if raw is None or raw == "":
+        return False, None, "Enter a guess."
+    try:
+        value = int(float(raw)) if "." in raw else int(raw)
+    except Exception:
+        return False, None, "That is not a number."
+    return True, value, None
 
 
 def check_guess(guess, secret):
     """
-    Compare guess to secret and return (outcome, message).
+    Compare guess to secret and return outcome string.
 
-    outcome examples: "Win", "Too High", "Too Low"
+    outcome: "Win", "Too High", or "Too Low"
     """
-    raise NotImplementedError("Refactor this function from app.py into logic_utils.py")
+    # FIX: Refactored from app.py into logic_utils.py using Claude Code. Always compares as integers —
+    # original code converted secret to a string on even attempts, causing backwards hints.
+    # Verified by running pytest tests/test_game_logic.py which confirmed all 5 tests pass.
+    if guess == secret:
+        return "Win"
+    if guess > secret:
+        return "Too High"
+    return "Too Low"
 
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
     """Update score based on outcome and attempt number."""
-    raise NotImplementedError("Refactor this function from app.py into logic_utils.py")
+    if outcome == "Win":
+        points = max(10, 100 - 10 * (attempt_number + 1))
+        return current_score + points
+    if outcome == "Too High" or outcome == "Too Low":
+        return current_score - 5
+    return current_score
