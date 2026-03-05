@@ -55,3 +55,18 @@ In the original app, the secret number kept changing because Streamlit reruns th
 
 # Answer 5:
 One habit I want to reuse is adding `# FIXME` comments to mark the exact location of a bug before trying to fix it — it forced me to understand the problem first instead of jumping straight into editing. Next time I work with AI on a coding task I would ask it to explain *why* a fix works, not just what to change, so I can catch it if the reasoning is wrong. This project changed how I think about AI-generated code because I used to assume it was either fully correct or obviously broken — now I know it can look clean and run without errors while still having subtle logic bugs baked in that only show up when you actually play the game.
+
+---
+
+## Challenge 5: AI Model Comparison
+
+**Bug tested:** The `check_guess` function converted the secret number to a string on even-numbered attempts, causing hints to flip direction due to string vs. integer comparison.
+
+**Claude Code suggestion:**
+Claude immediately identified the root cause — the `if st.session_state.attempts % 2 == 0: secret = str(...)` block — and suggested removing it entirely and always passing the integer secret directly to `check_guess`. It also explained *why* the bug caused wrong hints: in Python, string comparison is lexicographic, so `"9" > "50"` is `True` because `"9"` comes after `"5"` alphabetically. The fix was clear and the explanation made the behavior easy to verify.
+
+**ChatGPT suggestion (for comparison):**
+When given the same broken code, ChatGPT suggested adding a type check inside `check_guess` to handle both string and integer secrets — essentially working around the bug instead of removing it. While the suggestion worked, it added complexity and didn't explain why the string conversion was happening in the first place.
+
+**Comparison:**
+Claude Code gave a more readable fix by deleting the problematic code rather than patching around it, and explained the "why" (lexicographic comparison) clearly. ChatGPT's fix was technically valid but defensive in a way that left the bad code in place. For debugging intentional bugs like this, Claude's approach of finding and removing the root cause was more useful.
