@@ -25,13 +25,26 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+**Game Purpose:**
+A number guessing game built with Streamlit where the player tries to guess a secret number within a limited number of attempts. The player picks a difficulty (Easy, Normal, or Hard) which sets the number range and attempt limit. After each guess the game gives a higher/lower hint and tracks a score.
+
+**Bugs Found:**
+1. The Developer Debug Info expander was always visible on the page and showed the secret number — making it trivially easy to cheat.
+2. The hint text was hardcoded to "Guess a number between 1 and 100" regardless of difficulty — Easy and Hard modes showed the wrong range.
+3. The New Game button only partially reset the game — it used a hardcoded `randint(1, 100)` ignoring difficulty, and never cleared the score, status, or history.
+4. Switching difficulty mid-game kept the old secret number (e.g. a Normal-mode secret of 61 would carry into Easy mode, which only goes to 20).
+5. The `check_guess` function in `app.py` converted the secret to a string on even-numbered attempts, causing hints to be backwards due to string vs integer comparison.
+
+**Fixes Applied:**
+- Removed the debug expander entirely.
+- Updated hint text to use the computed `low` and `high` variables.
+- Fixed New Game to reset all state and use the correct difficulty range.
+- Added difficulty-change detection using `last_difficulty` in session state to regenerate the secret when the player switches modes.
+- Refactored `check_guess`, `parse_guess`, `get_range_for_difficulty`, and `update_score` into `logic_utils.py` with clean integer-only comparison.
 
 ## 📸 Demo
 
-- [ ] [Insert a screenshot of your fixed, winning game here]
+![Fixed game demo](demo.png)
 
 ## 🧪 Edge Case Test Results (Challenge 1)
 
