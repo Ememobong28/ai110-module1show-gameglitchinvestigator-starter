@@ -33,6 +33,16 @@ It wrote the code, ran away, and now the game is unplayable.
 
 - [ ] [Insert a screenshot of your fixed, winning game here]
 
+## 🧪 Edge Case Test Results (Challenge 1)
+
+Edge cases tested via `python3 -m pytest tests/test_game_logic.py -v`:
+
+- **Negative number** (`"-5"`) — parses successfully as `-5`, out of game range but handled without crashing
+- **Decimal input** (`"3.7"`) — truncated to `3` silently, game accepts it gracefully
+- **Non-numeric string** (`"abc"`) — returns `"That is not a number."` error, no crash
+
+![pytest results](pytest_results.png)
+
 ## 🚀 Stretch Features
 
 - [ ] [If you choose to complete Challenge 4, insert a screenshot of your Enhanced Game UI here]
