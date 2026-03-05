@@ -61,7 +61,7 @@ Edge cases tested via `python3 -m pytest tests/test_game_logic.py -v`:
 ### Challenge 2: Feature Expansion
 Added two new features using Claude Code Agent mode:
 - **High Score tracker** — saves your best score to `highscore.json` and displays it in the sidebar across sessions
-- **Guess History sidebar** — shows every guess with a closeness progress bar and emoji heat indicator (🔥 hot, ☕ warm, 🧊 cool, ❄️ cold)
+- **Guess History sidebar** — shows every guess with a closeness progress bar and emoji heat indicator
 
 ### Challenge 3: Professional Documentation
 Added full PEP 257-compliant docstrings to every function in `logic_utils.py`, including Args, Returns, and Examples sections. Claude Code generated the docstring structure and reviewed for PEP 8 compliance.
