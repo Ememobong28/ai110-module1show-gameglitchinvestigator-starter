@@ -58,4 +58,22 @@ Edge cases tested via `python3 -m pytest tests/test_game_logic.py -v`:
 
 ## 🚀 Stretch Features
 
-- [ ] [If you choose to complete Challenge 4, insert a screenshot of your Enhanced Game UI here]
+### Challenge 2: Feature Expansion
+Added two new features using Claude Code Agent mode:
+- **High Score tracker** — saves your best score to `highscore.json` and displays it in the sidebar across sessions
+- **Guess History sidebar** — shows every guess with a closeness progress bar and emoji heat indicator (🔥 hot, ☕ warm, 🧊 cool, ❄️ cold)
+
+### Challenge 3: Professional Documentation
+Added full PEP 257-compliant docstrings to every function in `logic_utils.py`, including Args, Returns, and Examples sections. Claude Code generated the docstring structure and reviewed for PEP 8 compliance.
+
+### Challenge 4: Enhanced Game UI 🎮
+Redesigned the game with a deep navy + amber aesthetic:
+- Deep navy background (`#0d1b2a`) with a dark sidebar panel
+- Gold/amber headings and buttons (`#f4c542`) — clean and readable
+- Gold progress bars in the guess history sidebar
+- Warm heat icons for guess closeness (🎯 🔥 🌡️ 🔵 ❄️)
+
+![Challenge 4 UI](challenge4_ui.png)
+
+### Challenge 5: AI Model Comparison
+Tested the string-vs-integer comparison bug against two AI models. See `reflection.md` for full analysis. **Summary:** Claude Code identified and removed the root cause; ChatGPT suggested a workaround that left the bad code in place.
